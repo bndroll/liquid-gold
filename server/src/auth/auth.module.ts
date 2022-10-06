@@ -5,15 +5,21 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from '../configs/jwt.config';
 import { PassportModule } from '@nestjs/passport';
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from '../user/models/user.model';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
-    ConfigModule,
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+    ]),
     JwtModule.registerAsync(getJwtConfig()),
-    PassportModule
+    ConfigModule,
+    PassportModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {
 }
