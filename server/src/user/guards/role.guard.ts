@@ -1,12 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
-import { UserRole } from '../models/user.model';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
 import { UserService } from '../user.service';
-
-export const Role = (role: UserRole) => SetMetadata('role', role);
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -19,12 +16,12 @@ export class RoleGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const requiredRole: string = this.reflector.getAllAndOverride<string>('role', [
+    const requiredRoles: string[] = this.reflector.getAllAndOverride<string[]>('role', [
       context.getHandler(),
       context.getClass(),
     ]);
 
-    if (!requiredRole) {
+    if (!requiredRoles) {
       return true;
     }
 
@@ -35,6 +32,6 @@ export class RoleGuard implements CanActivate {
     const userJwt = this.jwtService.verify(token, this.configService.get('JWT_SECRET'));
     const user = this.userService.findById(userJwt.id);
 
-    return user.then(u => u.role === requiredRole);
+    return user.then(u => !!requiredRoles.find(role => role === u.role));
   }
 }
