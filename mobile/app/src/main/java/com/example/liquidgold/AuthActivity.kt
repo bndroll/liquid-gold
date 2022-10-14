@@ -1,9 +1,13 @@
 package com.example.liquidgold
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Button
+import com.example.liquidgold.services.getAuthToken
+import com.example.liquidgold.services.hasToken
 import com.example.liquidgold.services.login
 import com.google.android.material.textfield.TextInputEditText
 
@@ -11,7 +15,6 @@ class AuthActivity : AppCompatActivity() {
     private val TAG = "AUTH_ACTIVITY"
     private lateinit var loginInput: TextInputEditText
     private lateinit var passwordInput: TextInputEditText
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,5 +37,10 @@ class AuthActivity : AppCompatActivity() {
 
     private fun checkLogin() {
         Log.e(TAG, "Auth check login")
+        if (!hasToken(this)) {
+            return
+        }
+
+        Log.e(TAG, getAuthToken(this) + " token")
     }
 }
