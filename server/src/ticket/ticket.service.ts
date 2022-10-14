@@ -95,17 +95,7 @@ export class TicketService implements OnModuleInit {
   }
 
   async findMyTicket(userId: string) {
-    return await this.ticketModel.aggregate([
-      { $match: { _id: userId } },
-      {
-        $lookup: {
-          from: 'tickets',
-          localField: '_id',
-          foreignField: 'driver',
-          as: 'tickets',
-        },
-      },
-    ]).exec();
+    return await this.ticketModel.findOne({ driver: userId }).exec();
   }
 
   async findById(id: string): Promise<Ticket> {
