@@ -1,6 +1,8 @@
 package com.example.liquidgold.models
 
 data class User(
-    val name: String,
-    val photo: String
+    val username: String,
+    val fio: String,
+    val photo: String?,
+    val rating: Int
 )

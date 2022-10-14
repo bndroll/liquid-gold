@@ -1,15 +1,13 @@
 package com.example.liquidgold
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.widget.Button
-import com.example.liquidgold.services.getAuthToken
-import com.example.liquidgold.services.hasToken
-import com.example.liquidgold.services.login
+import androidx.appcompat.app.AppCompatActivity
+import com.example.liquidgold.services.*
 import com.google.android.material.textfield.TextInputEditText
+
 
 class AuthActivity : AppCompatActivity() {
     private val TAG = "AUTH_ACTIVITY"
@@ -20,6 +18,7 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+//        clearAuthToken(this)
         checkLogin()
 
         loginInput = findViewById(R.id.loginInput)
@@ -30,7 +29,8 @@ class AuthActivity : AppCompatActivity() {
                 loginInput.text.toString(),
                 passwordInput.text.toString()
             ).subscribe {
-                Log.e(TAG, it)
+                setAuthToken(this, it)
+                checkLogin()
             }
         }
     }
@@ -41,6 +41,7 @@ class AuthActivity : AppCompatActivity() {
             return
         }
 
-        Log.e(TAG, getAuthToken(this) + " token")
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
     }
 }
