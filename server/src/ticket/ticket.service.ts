@@ -19,20 +19,23 @@ export class TicketService implements OnModuleInit {
     const tickets = await this.ticketModel.find({}).exec();
     if (tickets.length === 0) {
       await this.create('6349a2f061eb9439d0e91508', {
+        _id: '6349ca42195f40aec14a8b32',
         title: 'Заказ 1',
         description: 'Срочно нужен камаз',
-        transport: '6349b5471fa2beefd0771a83',
+        transport: '6349b5471fa2beefd0771a80',
         destination: { lat: 101, lon: 67 },
         priority: 1,
       });
       await this.create('6349a2f061eb9439d0e91508', {
+        _id: '6349ca42195f40aec14a8b37',
         title: 'Заказ 2',
         description: 'Срочно нужен камаз и камаз',
-        transport: '6349b5471fa2beefd0771a80',
+        transport: '6349b5471fa2beefd0771a83',
         destination: { lat: 11, lon: 30 },
         priority: 3,
       });
       await this.create('6349a2f061eb9439d0e91508', {
+        _id: '6349ca42195f40aec14a8b3c',
         title: 'Заказ 3',
         description: 'Срочно нужено 3 камаза',
         transport: '6349b5471fa2beefd0771a86',
@@ -43,6 +46,7 @@ export class TicketService implements OnModuleInit {
   }
 
   async create(userId: string, {
+    _id,
     title,
     description,
     transport,
@@ -62,6 +66,7 @@ export class TicketService implements OnModuleInit {
     const customer = await this.userService.findById(userId);
 
     const ticket = await new this.ticketModel({
+      _id,
       title,
       description,
       priority,

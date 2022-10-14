@@ -4,6 +4,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { TransportCategory } from '../../transport/models/transport.model';
 
 export class AuthRegisterDto {
+  _id: string;
+
   @ApiProperty({ description: 'Should contains at least 3 characters', type: String })
   @IsString()
   @MinLength(3, { message: 'Username should contains at least 3 characters' })
