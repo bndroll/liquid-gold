@@ -10,6 +10,9 @@ module.exports = {
   target: 'web',
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    alias: {
+      '@mui/styled-engine': '@mui/styled-engine-sc',
+    },
   },
   module: {
     rules: [
@@ -27,6 +30,10 @@ module.exports = {
         resolve: {
           fullySpecified: false,
         },
+      },
+      {
+        test: /\.(woff2|woff|eot|ttf|otf)$/,
+        use: ['file-loader'],
       },
     ],
   },
