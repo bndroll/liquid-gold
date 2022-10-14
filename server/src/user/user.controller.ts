@@ -1,12 +1,9 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { RoleGuard } from './guards/role.guard';
-import { UserRole } from './models/user.model';
 import { IdValidationPipe } from '../pipes/id-validation.pipe';
 import { UserId } from './decorators/user.decorator';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
-import { Role } from './decorators/role.decorator';
 
 @ApiTags('user')
 @Controller('user')
@@ -19,8 +16,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden, because role is not a Dispatcher' })
   @ApiBearerAuth()
   @Get()
-  @Role(UserRole.Dispatcher)
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard)
   async findAll() {
     return await this.userService.findAll();
   }
@@ -30,8 +26,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden, because role is not a Admin' })
   @ApiBearerAuth()
   @Get(':id')
-  @Role(UserRole.Dispatcher)
-  @UseGuards(RoleGuard)
+  @UseGuards(JwtAuthGuard)
   async findById(@Param('id', IdValidationPipe) id: string) {
     return await this.userService.findById(id);
   }
@@ -41,8 +36,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden, because you are not logged in' })
   @ApiBearerAuth()
   @Get('find/me')
-  @Role(UserRole.Driver, UserRole.Dispatcher)
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard)
   async findMe(@UserId() id: string) {
     return await this.userService.findById(id);
   }

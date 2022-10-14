@@ -15,11 +15,14 @@ export class User extends Document {
   @Prop({ required: true })
   passwordHash: string;
 
-  @Prop({required: true})
+  @Prop({ required: true })
   fio: string;
 
   @Prop({ required: true, enum: UserRole, type: String })
   role: UserRole;
+
+  @Prop()
+  rating: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
