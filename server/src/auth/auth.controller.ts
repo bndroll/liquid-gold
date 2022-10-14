@@ -25,8 +25,8 @@ export class AuthController {
   @Post('login')
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  async login(@Body() { phone, password }: AuthLoginDto) {
-    const { id } = await this.authService.validateUser(phone, password);
+  async login(@Body() { username, password }: AuthLoginDto) {
+    const { id } = await this.authService.validateUser(username, password);
     return await this.authService.login(id);
   }
 }

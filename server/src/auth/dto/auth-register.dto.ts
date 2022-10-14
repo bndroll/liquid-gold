@@ -1,5 +1,5 @@
 import { UserRole } from '../../user/models/user.model';
-import { IsEnum, IsOptional, IsPhoneNumber, IsString, MinLength } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthRegisterDto {
@@ -13,13 +13,12 @@ export class AuthRegisterDto {
   @MinLength(3, { message: 'Password should contains at least 3 characters' })
   password: string;
 
-  @ApiProperty({ description: 'Must be a real phone number', type: String })
+  @ApiProperty({ description: 'FIO of user', type: String })
   @IsString()
-  @IsPhoneNumber()
-  phone: string;
+  fio: string;
 
   @ApiProperty({
-    enum: ['Customer', 'Driver', 'Dispatcher', 'Admin'],
+    enum: ['Customer', 'Driver', 'Dispatcher'],
     default: 'Customer',
     type: UserRole,
   })
