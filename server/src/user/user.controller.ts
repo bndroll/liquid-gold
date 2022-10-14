@@ -40,4 +40,9 @@ export class UserController {
   async findMe(@UserId() id: string) {
     return await this.userService.findById(id);
   }
+
+  @Get('find/free-drivers')
+  async findFreeDrivers() {
+    return await this.userService.findFreeDrivers();
+  }
 }
