@@ -16,6 +16,7 @@ export class TransportService implements OnModuleInit {
     const transport = await this.transportModel.find({}).exec();
     if (transport.length === 0) {
       await this.create({
+        _id: '6349b5471fa2beefd0771a80',
         title: 'Чайка Сервис 2784SG',
         description: 'Автовышка (28 м)',
         number: 'А095АА/999',
@@ -23,6 +24,7 @@ export class TransportService implements OnModuleInit {
         type: TransportType.Platforms,
       });
       await this.create({
+        _id: '6349b5471fa2beefd0771a83',
         title: 'LIEBHERR LTM 1100-4.1',
         description: 'Кран 100 т.',
         number: 'А306АА/999',
@@ -30,6 +32,7 @@ export class TransportService implements OnModuleInit {
         type: TransportType.Cranes,
       });
       await this.create({
+        _id: '6349b5471fa2beefd0771a86',
         title: 'DIECI ICARUS 40.17',
         description: 'Погрузчик Телескопический 7,5т/5,4м',
         number: 'А589АА/999',
@@ -39,14 +42,14 @@ export class TransportService implements OnModuleInit {
     }
   }
 
-  async create({ title, description, number, category, type }: CreateTransportDto): Promise<Transport> {
+  async create({ _id, title, description, number, category, type }: CreateTransportDto): Promise<Transport> {
     const oldTransport = await this.transportModel.findOne({ number }).exec();
     if (oldTransport) {
       throw new BadRequestException();
     }
 
     const transport = await new this.transportModel({
-      title, description, number, category, type,
+      _id, title, description, number, category, type,
     });
     return await transport.save();
   }

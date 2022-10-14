@@ -20,6 +20,7 @@ export class AuthService implements OnModuleInit {
     const users = await this.userModel.find({}).exec();
     if (users.length === 0) {
       await this.register({
+        _id: '6349a2f061eb9439d0e91508',
         username: 'bogdan',
         fio: 'Do Si Yo',
         password: '1234',
@@ -28,6 +29,7 @@ export class AuthService implements OnModuleInit {
         categories: [TransportCategory.A, TransportCategory.C],
       });
       await this.register({
+        _id: '6349a2f061eb9439d0e9150b',
         username: 'kolya',
         fio: 'Lori Yang',
         password: '1234',
@@ -36,6 +38,7 @@ export class AuthService implements OnModuleInit {
         categories: [TransportCategory.B, TransportCategory.D],
       });
       await this.register({
+        _id: '6349a2f061eb9439d0e9150e',
         username: 'dima',
         fio: 'Dima Doska',
         password: '1234',
@@ -44,6 +47,7 @@ export class AuthService implements OnModuleInit {
         categories: [TransportCategory.D],
       });
       await this.register({
+        _id: '6349a2f061eb9439d0e91511',
         username: 'oleg',
         fio: 'Oleg Krytoi',
         password: '1234',
@@ -55,7 +59,7 @@ export class AuthService implements OnModuleInit {
   }
 
   async register(@Body() {
-    fio, username, password, role = UserRole.Customer, rating = 4, categories,
+    _id, fio, username, password, role = UserRole.Customer, rating = 4, categories,
   }: AuthRegisterDto): Promise<User> {
     const oldUser = await this.findByUsername(username);
     if (oldUser) {
@@ -65,7 +69,7 @@ export class AuthService implements OnModuleInit {
     const salt = await genSalt(10);
     const passwordHash = await hash(password, salt);
 
-    const user = new this.userModel({ username, fio, passwordHash, role, rating, categories });
+    const user = new this.userModel({ _id: _id, username, fio, passwordHash, role, rating, categories });
     return await user.save();
   }
 
