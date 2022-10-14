@@ -6,6 +6,7 @@ import { compare, genSalt, hash } from 'bcryptjs';
 import { User, UserRole } from '../user/models/user.model';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { AuthErrorMessages } from './auth.constants';
+import { TransportCategory } from '../transport/models/transport.model';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -18,14 +19,44 @@ export class AuthService implements OnModuleInit {
   async onModuleInit(): Promise<any> {
     const users = await this.userModel.find({}).exec();
     if (users.length === 0) {
-      await this.register({ username: 'bogdan', fio: 'Do Si Yo', password: '1234', role: UserRole.Customer });
-      await this.register({ username: 'kolya', fio: 'Lori Yang', password: '1234', role: UserRole.Driver });
-      await this.register({ username: 'dima', fio: 'Dima Doska', password: '1234', role: UserRole.Driver });
-      await this.register({ username: 'oleg', fio: 'Oleg Krytoi', password: '1234', role: UserRole.Dispatcher });
+      await this.register({
+        username: 'bogdan',
+        fio: 'Do Si Yo',
+        password: '1234',
+        role: UserRole.Customer,
+        rating: 4,
+        categories: [TransportCategory.A, TransportCategory.C],
+      });
+      await this.register({
+        username: 'kolya',
+        fio: 'Lori Yang',
+        password: '1234',
+        role: UserRole.Driver,
+        rating: 4,
+        categories: [TransportCategory.B, TransportCategory.D],
+      });
+      await this.register({
+        username: 'dima',
+        fio: 'Dima Doska',
+        password: '1234',
+        role: UserRole.Driver,
+        rating: 4,
+        categories: [TransportCategory.D],
+      });
+      await this.register({
+        username: 'oleg',
+        fio: 'Oleg Krytoi',
+        password: '1234',
+        role: UserRole.Dispatcher,
+        rating: 4,
+        categories: [TransportCategory.B],
+      });
     }
   }
 
-  async register(@Body() { fio, username, password, role = UserRole.Customer }: AuthRegisterDto): Promise<User> {
+  async register(@Body() {
+    fio, username, password, role = UserRole.Customer, rating = 4, categories,
+  }: AuthRegisterDto): Promise<User> {
     const oldUser = await this.findByUsername(username);
     if (oldUser) {
       throw new BadRequestException(AuthErrorMessages.AlreadyExist);
@@ -34,7 +65,7 @@ export class AuthService implements OnModuleInit {
     const salt = await genSalt(10);
     const passwordHash = await hash(password, salt);
 
-    const user = new this.userModel({ username, fio, passwordHash, role });
+    const user = new this.userModel({ username, fio, passwordHash, role, rating, categories });
     return await user.save();
   }
 

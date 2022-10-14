@@ -1,6 +1,7 @@
 import { UserRole } from '../../user/models/user.model';
-import { IsEnum, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { TransportCategory } from '../../transport/models/transport.model';
 
 export class AuthRegisterDto {
   @ApiProperty({ description: 'Should contains at least 3 characters', type: String })
@@ -25,4 +26,9 @@ export class AuthRegisterDto {
   @IsEnum(UserRole)
   @IsOptional()
   role?: UserRole;
+
+  @IsNumber()
+  rating: number;
+
+  categories: TransportCategory[];
 }
