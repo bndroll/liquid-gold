@@ -9,7 +9,7 @@ export class Http {
     return instance.get<T>(url);
   }
 
-  static post<T>(url: string, data: any): Promise<AxiosResponse<T>> {
+  static post<T>(url: string, data: any): Promise<AxiosResponse<T, any>> {
     return instance.post<T>(url, data);
   }
 
