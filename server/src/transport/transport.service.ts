@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Transport, TransportCategory, TransportType } from './models/transport.model';
 import { CreateTransportDto } from './dto/craete-transport.dto';
+import { TicketState } from '../ticket/models/ticket.model';
 
 @Injectable()
 export class TransportService implements OnModuleInit {
@@ -51,10 +52,14 @@ export class TransportService implements OnModuleInit {
   }
 
   async findAll(): Promise<Transport[]> {
-    const transports = await this.transportModel.aggregate([
+    return await this.transportModel.find({}).sort({ type: 'asc' }).exec();
+  }
+
+  async findAllWithTickets(): Promise<Transport[]> {
+    const transport = await this.transportModel.aggregate([
       {
         $lookup: {
-          from: 'ticket',
+          from: 'tickets',
           localField: '_id',
           foreignField: 'transport',
           as: 'tickets',
@@ -62,9 +67,19 @@ export class TransportService implements OnModuleInit {
       },
     ]).exec();
 
-    console.log(transports);
+    const res = transport.map(transport => {
+      const isOrdersClose = !transport.tickets?.find(ticket => ticket.state !== TicketState.Close);
 
-    return transports;
+      console.log(isOrdersClose);
+
+      if (isOrdersClose && transport.tickets.length === 0) {
+        return { ...transport, isFree: false };
+      }
+
+      return { ...transport, isFree: true };
+    });
+
+    return res;
   }
 
   async findById(id: string): Promise<Transport> {
