@@ -35,7 +35,7 @@ export class AuthService implements OnModuleInit {
     const passwordHash = await hash(password, salt);
 
     const user = new this.userModel({ username, fio, passwordHash, role });
-    return user.save();
+    return await user.save();
   }
 
   async login(id: string): Promise<{ access_token: string }> {

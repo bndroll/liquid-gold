@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './models/user.model';
+import { User, UserRole } from './models/user.model';
 import { Model } from 'mongoose';
 import { UserErrorMessages } from './user.constants';
 
@@ -23,5 +23,22 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async findFreeDrivers() {
+    return await this.userModel.aggregate([
+      { $match: { role: UserRole.Driver } },
+      {
+        $lookup: {
+          from: 'tickets',
+          localField: '_id',
+          foreignField: 'driver',
+          as: 'tickets',
+        },
+      },
+      { $addFields: { ticketsSize: { $size: '$tickets' } } },
+      { $match: { ticketsSize: 0 } },
+      { $unset: ['ticketsSize', 'tickets'] },
+    ]).exec();
   }
 }
