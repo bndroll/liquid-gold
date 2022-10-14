@@ -55,10 +55,15 @@ export class TransportService implements OnModuleInit {
   }
 
   async findAll(): Promise<Transport[]> {
-    return await this.transportModel.find({}).sort({ type: 'asc' }).exec();
+    const transports = await this.findAllWithTickets();
+    const res = transports.map(item => {
+      const { tickets, ...rest } = item;
+      return rest;
+    });
+    return res.sort((a, b) => a.type - b.type);
   }
 
-  async findAllWithTickets(): Promise<Transport[]> {
+  async findAllWithTickets() {
     const transport = await this.transportModel.aggregate([
       {
         $lookup: {
@@ -70,19 +75,13 @@ export class TransportService implements OnModuleInit {
       },
     ]).exec();
 
-    const res = transport.map(transport => {
+    return transport.map(transport => {
       const isOrdersClose = !transport.tickets?.find(ticket => ticket.state !== TicketState.Close);
-
-      console.log(isOrdersClose);
-
       if (isOrdersClose && transport.tickets.length === 0) {
-        return { ...transport, isFree: false };
+        return { ...transport, isFree: true };
       }
-
-      return { ...transport, isFree: true };
+      return { ...transport, isFree: false };
     });
-
-    return res;
   }
 
   async findById(id: string): Promise<Transport> {

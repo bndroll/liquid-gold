@@ -37,7 +37,7 @@ export class Transport extends Document {
     lat: { type: Number },
     lon: { type: Number },
   }))
-  destination: TransportGeoPoint;
+  coordinates: TransportGeoPoint;
 
   @Prop({ required: true, enum: TransportType, type: String })
   type: TransportType;

@@ -19,7 +19,7 @@ export class TicketService implements OnModuleInit {
     const tickets = await this.ticketModel.find({}).exec();
     if (tickets.length === 0) {
       await this.create('6349a2f061eb9439d0e91508', {
-        _id: '6349ca42195f40aec14a8b32',
+        // _id: '6349ca42195f40aec14a8b32',
         title: 'Заказ 1',
         description: 'Срочно нужен камаз',
         transport: '6349b5471fa2beefd0771a80',
@@ -27,7 +27,7 @@ export class TicketService implements OnModuleInit {
         priority: 1,
       });
       await this.create('6349a2f061eb9439d0e91508', {
-        _id: '6349ca42195f40aec14a8b37',
+        // _id: '6349ca42195f40aec14a8b37',
         title: 'Заказ 2',
         description: 'Срочно нужен камаз и камаз',
         transport: '6349b5471fa2beefd0771a83',
@@ -35,7 +35,7 @@ export class TicketService implements OnModuleInit {
         priority: 3,
       });
       await this.create('6349a2f061eb9439d0e91508', {
-        _id: '6349ca42195f40aec14a8b3c',
+        // _id: '6349ca42195f40aec14a8b3c',
         title: 'Заказ 3',
         description: 'Срочно нужено 3 камаза',
         transport: '6349b5471fa2beefd0771a86',
@@ -46,7 +46,7 @@ export class TicketService implements OnModuleInit {
   }
 
   async create(userId: string, {
-    _id,
+    // _id,
     title,
     description,
     transport,
@@ -66,7 +66,7 @@ export class TicketService implements OnModuleInit {
     const customer = await this.userService.findById(userId);
 
     const ticket = await new this.ticketModel({
-      _id,
+      // _id,
       title,
       description,
       priority,
@@ -75,7 +75,15 @@ export class TicketService implements OnModuleInit {
       customer: customer._id,
       state: TicketState.Open,
     });
-    return await ticket.save();
+    const dbTicket = await ticket.save();
+
+    const freeDrivers = await this.userService.findFreeDrivers();
+    const filteredDrivers = freeDrivers?.filter(driver => driver.categories.includes(orderedTransport.category));
+    const ratingFilteredDriver = filteredDrivers.sort((a, b) => a.rating - b.rating)[0];
+
+    dbTicket.driver = ratingFilteredDriver ?? null;
+
+    return await dbTicket.save();
   }
 
   async findAll(): Promise<Ticket[]> {
@@ -84,6 +92,20 @@ export class TicketService implements OnModuleInit {
 
   async findMyTickets(userId: string): Promise<Ticket[]> {
     return await this.ticketModel.find({ customer: userId }).exec();
+  }
+
+  async findMyTicket(userId: string) {
+    return await this.ticketModel.aggregate([
+      { $match: { _id: userId } },
+      {
+        $lookup: {
+          from: 'tickets',
+          localField: '_id',
+          foreignField: 'driver',
+          as: 'tickets',
+        },
+      },
+    ]).exec();
   }
 
   async findById(id: string): Promise<Ticket> {

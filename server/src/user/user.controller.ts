@@ -4,6 +4,9 @@ import { IdValidationPipe } from '../pipes/id-validation.pipe';
 import { UserId } from './decorators/user.decorator';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RoleGuard } from './guards/role.guard';
+import { Role } from './decorators/role.decorator';
+import { UserRole } from './models/user.model';
 
 @ApiTags('user')
 @Controller('user')
@@ -39,5 +42,12 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async findMe(@UserId() id: string) {
     return await this.userService.findById(id);
+  }
+
+  @Get('find/free-drivers')
+  @Role(UserRole.Dispatcher, UserRole.Customer)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async findFreeDrivers() {
+    return await this.userService.findFreeDrivers();
   }
 }

@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { getJwtConfig } from '../configs/jwt.config';
 import { ConfigModule } from '@nestjs/config';
 import { Transport, TransportSchema } from './models/transport.model';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { Transport, TransportSchema } from './models/transport.model';
     ]),
     JwtModule.registerAsync(getJwtConfig()),
     ConfigModule,
+    UserModule,
   ],
   controllers: [TransportController],
   providers: [TransportService],

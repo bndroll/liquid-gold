@@ -17,8 +17,8 @@ export class TransportController {
   }
 
   @Get('/find/with-ticket')
-  // @Role(UserRole.Dispatcher)
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  @Role(UserRole.Dispatcher)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   async findAllWithTickets() {
     return await this.transportService.findAllWithTickets();
   }

@@ -30,11 +30,18 @@ export class TicketController {
     return await this.tickerService.findAll();
   }
 
-  @Get('my')
+  @Get('find/my-orders')
   @Role(UserRole.Customer)
   @UseGuards(JwtAuthGuard, RoleGuard)
   async findMyTickets(@UserId() userId: string) {
     return await this.tickerService.findMyTickets(userId);
+  }
+
+  @Get('find/my')
+  @Role(UserRole.Driver)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async findMyTicket(@UserId() userId: string) {
+    return await this.tickerService.findMyTicket(userId);
   }
 
   @Patch(':id/close')

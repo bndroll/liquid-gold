@@ -2,7 +2,7 @@ import { IsNotEmpty, IsNumber, IsString, Max, Min } from 'class-validator';
 import { TicketGeoPoint } from '../models/ticket.model';
 
 export class CreateTicketDto {
-  _id: string;
+  // _id: string;
 
   @IsString()
   title: string;
