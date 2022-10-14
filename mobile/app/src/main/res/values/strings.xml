@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Liquid Gold</string>
+    <string name="default_user_name">Пользователь прогружается…</string>
+    <string name="username_hint">Логин</string>
+    <string name="password_hint">Пароль</string>
+    <string name="login_button_text">Войти</string>
+    <string name="preference_auth_token_key">auth_value</string>
 </resources>
