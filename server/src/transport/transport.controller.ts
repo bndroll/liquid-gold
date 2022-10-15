@@ -4,6 +4,7 @@ import { Role } from '../user/decorators/role.decorator';
 import { UserRole } from '../user/models/user.model';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { RoleGuard } from '../user/guards/role.guard';
+import { IdValidationPipe } from '../pipes/id-validation.pipe';
 
 @Controller('transport')
 export class TransportController {
@@ -18,7 +19,7 @@ export class TransportController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id', IdValidationPipe) id: string) {
     return await this.transportService.findById(id);
   }
 
