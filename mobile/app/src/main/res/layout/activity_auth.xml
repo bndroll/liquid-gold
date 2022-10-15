@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/primary"
     android:layout_height="match_parent"
     tools:context=".AuthActivity">
 
@@ -22,13 +23,16 @@
             android:layout_height="wrap_content"
             android:hint="@string/username_hint"
             android:layout_marginTop="250dp"
+            app:hintTextColor="@color/black"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:background="@color/white"
                 android:id="@+id/loginInput"
                 android:layout_marginTop="250dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/white"
                 android:hint="@string/username_hint"
                 />
         </com.google.android.material.textfield.TextInputLayout>
@@ -40,18 +44,24 @@
             android:layout_height="wrap_content"
             android:hint="@string/password_hint"
             android:layout_marginTop="10dp"
+            app:hintTextColor="@color/black"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:background="@color/white"
                 android:id="@+id/passwordInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColorHint="@color/white"
                 android:inputType="textPassword"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            android:background="@color/primary_dark"
+            android:textColor="@color/white"
             android:id="@+id/loginButton"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/login_button_text"

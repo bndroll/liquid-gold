@@ -3,7 +3,6 @@ package com.example.liquidgold.services
 import android.app.Activity
 import android.util.Log
 import com.example.liquidgold.dto.LoginResponseDTO
-import com.example.liquidgold.models.GeoPoint
 import com.example.liquidgold.models.Task
 import com.example.liquidgold.models.User
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -25,14 +24,29 @@ var objectMapper: ObjectMapper =
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .registerModule(KotlinModule())
 
-fun getTask(): Observable<Task> {
-    return Observable.just(Task(
-        "Задача 1",
-        "Выкопать песчаный карьер",
-        5,
-        GeoPoint(59.9382409, 30.3257298)
-        )
-    )
+fun getTask(activity: Activity): Observable<Task> {
+    return Observable.fromCallable {
+        val request = Request.Builder()
+            .url(BASE_URL.plus("ticket/find/my"))
+            .get()
+            .addHeader("Authorization", "Bearer " + getAuthToken(activity))
+            .build()
+
+        try {
+            client.newCall(request).execute().use { response ->
+                val result = response.body!!.string()
+                Log.e(TAG, result)
+
+                return@fromCallable objectMapper.readValue<Task?>(result, jacksonTypeRef())
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, e.message + " error")
+            throw e
+        }
+    }
+        .onErrorComplete()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
 }
 
 fun getInfo(activity: Activity): Observable<User> {
@@ -47,9 +61,8 @@ fun getInfo(activity: Activity): Observable<User> {
             client.newCall(request).execute().use { response ->
                 val result = response.body!!.string()
                 Log.e(TAG, result)
-                val resultDto: User = objectMapper.readValue(result, jacksonTypeRef())
 
-                return@fromCallable resultDto
+                return@fromCallable objectMapper.readValue<User?>(result, jacksonTypeRef())
             }
         } catch (e: Exception) {
             Log.e(TAG, e.message + " error")
