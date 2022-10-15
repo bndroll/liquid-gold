@@ -34,7 +34,7 @@ export class ReportService {
       border: '20mm',
       header: {
         height: '15mm',
-        contents: '<h4 style=" color: #FAB529;font-size: "20px";font-weight:800;text-align:center;">Золотой Дождь</h4>',
+        contents: '<h4 style=" color: #FAB529;font-size: "20px";font-weight:800;text-align:center;">Жидкое золото</h4>',
       },
       footer: {
         height: '20mm',
