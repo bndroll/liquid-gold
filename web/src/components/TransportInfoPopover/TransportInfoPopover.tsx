@@ -26,14 +26,6 @@ export const TransportInfoPopover: FC<TTransportInfoPopoverProps> = ({
         <span>Категория: </span>
         <span>{transport.category}</span>
       </div>
-      <Button
-        variant="contained"
-        size="small"
-        sx={{ color: 'white', marginTop: '10px' }}
-        onClick={handleReserveClick}
-      >
-        Забронировать
-      </Button>
     </Styled.Wrapper>
   );
 };

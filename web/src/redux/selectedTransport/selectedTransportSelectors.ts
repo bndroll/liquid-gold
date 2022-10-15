@@ -5,7 +5,7 @@ import { TSelectedTransportState } from './selectedTransportTypes';
 const selectedTransportState = (state: RootState): TSelectedTransportState =>
   state.selectedTransport;
 
-export const selecteSelectedTransport = createSelector(
+export const selectSelectedTransport = createSelector(
   selectedTransportState,
   (selectedTransportState) => selectedTransportState.data
 );

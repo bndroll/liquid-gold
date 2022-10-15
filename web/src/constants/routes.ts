@@ -4,7 +4,9 @@ type TRoutesKeys =
   | 'home'
   | 'signin'
   | 'createTicketMain'
-  | 'createTicketTransport';
+  | 'createTicketTransport'
+  | 'myTickets'
+  | 'ticket';
 
 export const APP_ROUTES: Record<TRoutesKeys, TAppRoute> = {
   home: {
@@ -22,5 +24,13 @@ export const APP_ROUTES: Record<TRoutesKeys, TAppRoute> = {
   createTicketTransport: {
     title: 'Создать заявку',
     path: '/create-ticket-transport',
+  },
+  myTickets: {
+    title: 'Мои заявки',
+    path: '/my-tickets',
+  },
+  ticket: {
+    title: 'Заявка',
+    path: '/ticket',
   },
 };
