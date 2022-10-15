@@ -1,15 +1,18 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
 import { Transport, TransportCategory, TransportType } from './models/transport.model';
 import { CreateTransportDto } from './dto/craete-transport.dto';
 import { Ticket, TicketState } from '../ticket/models/ticket.model';
+import { TicketService } from '../ticket/ticket.service';
 
 @Injectable()
 export class TransportService implements OnModuleInit {
   constructor(
     @InjectModel(Transport.name) private readonly transportModel: Model<Transport>,
+    @Inject(forwardRef(() => TicketService))
+    private readonly ticketService: TicketService,
   ) {
   }
 
@@ -128,16 +131,29 @@ export class TransportService implements OnModuleInit {
     const newDateStart = new Date(dateStart);
     const newDateEnd = new Date(dateEnd);
 
-    // const blockedTickets: Ticket[] = [];
+    const blockedTickets: Ticket[] = [];
 
     for (const ticket of transport.tickets) {
       if (
         (newDateEnd >= ticket.dateStart && newDateEnd <= ticket.dateEnd) ||
         (ticket.dateEnd >= newDateStart && ticket.dateEnd <= newDateEnd)
       ) {
-        // blockedTickets.push(ticket);
+        blockedTickets.push(ticket);
+      }
+    }
+
+    if (blockedTickets.length === 0) {
+      return true;
+    }
+
+    for (const blockedTicket of blockedTickets) {
+      if (priority <= blockedTicket.priority) {
         return false;
       }
+    }
+
+    for (const blockedTicket of blockedTickets) {
+      await this.ticketService.rejectTicket(blockedTicket._id);
     }
 
     return true;

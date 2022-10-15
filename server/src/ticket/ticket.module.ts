@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { TicketController } from './ticket.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -20,11 +20,12 @@ import { ReportModule } from '../report/report.module';
     ScheduleModule,
     ConfigModule,
     UserModule,
-    TransportModule,
-    ReportModule
+    forwardRef(() => TransportModule),
+    ReportModule,
   ],
   controllers: [TicketController],
   providers: [TicketService],
+  exports: [TicketService],
 })
 export class TicketModule {
 }

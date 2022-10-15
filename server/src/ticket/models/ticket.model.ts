@@ -7,7 +7,8 @@ import { User } from '../../user/models/user.model';
 export enum TicketState {
   Open = 'Open',
   Working = 'Working',
-  Close = 'Close'
+  Close = 'Close',
+  Rejected = 'Rejected'
 }
 
 export interface TicketGeoPoint {

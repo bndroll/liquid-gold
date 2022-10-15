@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Ticket, TicketState } from './models/ticket.model';
@@ -15,6 +15,7 @@ export class TicketService implements OnModuleInit {
   constructor(
     @InjectModel(Ticket.name) private readonly ticketModel: Model<Ticket>,
     private readonly userService: UserService,
+    @Inject(forwardRef(() => TransportService))
     private readonly transportService: TransportService,
     private readonly reportService: ReportService,
   ) {
@@ -69,48 +70,39 @@ export class TicketService implements OnModuleInit {
     const isTransportAvailable =
       await this.transportService.checkForFreeInInterval(transport, priority, dateStart, dateEnd);
     if (isTransportAvailable) {
-      console.log('available');
-    } else {
-      console.log('not available');
-    }
+      const customer = await this.userService.findById(userId);
 
-    /* TODO
-    1. Проверить транспорт на занятость
-    2. Если занят проверить приоритет
-    3. Если не одинаковый, то склоняемся в пользу большего
-    4. Если одинаковый смотрим на дату создания заказа
-     */
-
-    const customer = await this.userService.findById(userId);
-
-    const ticket = await new this.ticketModel({
-      title,
-      description,
-      priority,
-      destination,
-      transport: orderedTransport._id,
-      customer: customer._id,
-      state: TicketState.Open,
-      dateStart,
-      dateEnd,
-      createdDate: Date.now(),
-    });
-    const dbTicket = await ticket.save();
-
-    const freeDrivers = await this.userService.findFreeDrivers();
-    const resTicket = await this.filterDriversAndSetToTicket(dbTicket, orderedTransport, freeDrivers);
-
-    if (resTicket.driver) {
-      const driver = await this.userService.findById(resTicket.driver.toString());
-      this.reportService.generate({
-        ticket: resTicket,
-        driver: driver,
-        transport: orderedTransport,
-        customer: customer,
+      const ticket = await new this.ticketModel({
+        title,
+        description,
+        priority,
+        destination,
+        transport: orderedTransport._id,
+        customer: customer._id,
+        state: TicketState.Open,
+        dateStart,
+        dateEnd,
+        createdDate: Date.now(),
       });
-    }
+      const dbTicket = await ticket.save();
 
-    return resTicket;
+      const freeDrivers = await this.userService.findFreeDrivers();
+      const resTicket = await this.filterDriversAndSetToTicket(dbTicket, orderedTransport, freeDrivers);
+
+      if (resTicket.driver) {
+        const driver = await this.userService.findById(resTicket.driver.toString());
+        this.reportService.generate({
+          ticket: resTicket,
+          driver: driver,
+          transport: orderedTransport,
+          customer: customer,
+        });
+      }
+
+      return resTicket;
+    } else {
+      throw new BadRequestException('Нет доступного транспорта');
+    }
   }
 
   async findAll(): Promise<Ticket[]> {
@@ -184,6 +176,14 @@ export class TicketService implements OnModuleInit {
   async closeTicket(id: string) {
     const ticket = await this.findById(id);
     ticket.state = TicketState.Close;
+    return await ticket.save();
+  }
+
+  async rejectTicket(id: string) {
+    const ticket = await this.findById(id);
+    ticket.state = TicketState.Rejected;
+    ticket.driver = null;
+    ticket.transport = null;
     return await ticket.save();
   }
 }
