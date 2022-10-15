@@ -34,7 +34,10 @@ export const SideBar: FC = (): JSX.Element => {
       <List>
         <ListItemButton
           onClick={() => history.push(APP_ROUTES.createTicketTransport.path)}
-          selected={location.pathname === APP_ROUTES.createTicketTransport.path}
+          selected={
+            location.pathname === APP_ROUTES.createTicketTransport.path ||
+            location.pathname === APP_ROUTES.createTicketMain.path
+          }
           sx={{
             borderRadius: '4px',
             marginBottom: '10px',
@@ -44,6 +47,8 @@ export const SideBar: FC = (): JSX.Element => {
           <ListItemText primary="Создать заявку" sx={{ color: 'white' }} />
         </ListItemButton>
         <ListItemButton
+          onClick={() => history.push(APP_ROUTES.myTickets.path)}
+          selected={location.pathname === APP_ROUTES.myTickets.path}
           sx={{
             borderRadius: '4px',
             marginBottom: '10px',

@@ -1,12 +1,22 @@
-import { Alert, Box, Button, Paper, useTheme } from '@mui/material';
+import { Box, Button, Paper, useTheme } from '@mui/material';
 import React, { FC } from 'react';
 import { TypeToLabelMap } from '../FilterPanel/declarations';
 import { TTransportCardProps } from './declarations';
+import history from '../../history';
+import { APP_ROUTES } from '../../constants/routes';
+import { useDispatch } from 'react-redux';
+import { setSelectedTransport } from '../../redux/selectedTransport/selectedTransportSlice';
 
 export const TransportCard: FC<TTransportCardProps> = ({
   transport,
 }): JSX.Element => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const handleReserveClick = (): void => {
+    history.push(APP_ROUTES.createTicketMain.path);
+    dispatch(setSelectedTransport(transport));
+  };
 
   return (
     <Paper sx={{ padding: '10px', height: '100%' }}>
@@ -40,6 +50,7 @@ export const TransportCard: FC<TTransportCardProps> = ({
         </Box>
       )}
       <Button
+        onClick={handleReserveClick}
         sx={{ marginTop: '20px', color: 'white' }}
         variant="contained"
         size="small"
