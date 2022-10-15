@@ -11,7 +11,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RMQModule } from 'nestjs-rmq';
 import { getRMQConfig } from './configs/rmq.config';
-import { RaportModule } from './raport/raport.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { RaportModule } from './raport/raport.module';
     UserModule,
     TransportModule,
     TicketModule,
-    RaportModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

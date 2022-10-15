@@ -9,6 +9,7 @@ import { Ticket, TicketSchema } from './models/ticket.model';
 import { UserModule } from '../user/user.module';
 import { TransportModule } from '../transport/transport.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ReportModule } from '../report/report.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ConfigModule,
     UserModule,
     TransportModule,
+    ReportModule
   ],
   controllers: [TicketController],
   providers: [TicketService],

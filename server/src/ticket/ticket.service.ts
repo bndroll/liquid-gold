@@ -8,6 +8,7 @@ import { TransportService } from '../transport/transport.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Transport } from '../transport/models/transport.model';
 import { User } from '../user/models/user.model';
+import { ReportService } from '../report/report.service';
 
 @Injectable()
 export class TicketService implements OnModuleInit {
@@ -15,6 +16,7 @@ export class TicketService implements OnModuleInit {
     @InjectModel(Ticket.name) private readonly ticketModel: Model<Ticket>,
     private readonly userService: UserService,
     private readonly transportService: TransportService,
+    private readonly reportService: ReportService,
   ) {
   }
 
@@ -81,7 +83,27 @@ export class TicketService implements OnModuleInit {
     const dbTicket = await ticket.save();
 
     const freeDrivers = await this.userService.findFreeDrivers();
-    return await this.filterDriversAndSetToTicket(dbTicket, orderedTransport, freeDrivers);
+    const resTicket = await this.filterDriversAndSetToTicket(dbTicket, orderedTransport, freeDrivers);
+
+    if (resTicket.driver) {
+      const driver = await this.userService.findById(resTicket.driver.toString());
+      await this.reportService.generate({
+        ticket: resTicket,
+        driver: driver,
+        transport: orderedTransport,
+        customer: customer,
+      });
+    }
+
+    return resTicket;
+  }
+
+  async test() {
+    const ticket = await this.findById('6349ca42195f40aec14a8b32');
+    const driver = await this.userService.findById('6349a2f061eb9439d0e9150b');
+    const customer = await this.userService.findById('6349a2f061eb9439d0e91508');
+    const transport = await this.transportService.findById('6349b5471fa2beefd0771a80');
+    await this.reportService.generate({ ticket, driver, transport, customer });
   }
 
   async findAll(): Promise<Ticket[]> {
