@@ -1,4 +1,4 @@
-import { BadRequestException, forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
@@ -6,6 +6,7 @@ import { Transport, TransportCategory, TransportType } from './models/transport.
 import { CreateTransportDto } from './dto/craete-transport.dto';
 import { Ticket, TicketState } from '../ticket/models/ticket.model';
 import { TicketService } from '../ticket/ticket.service';
+import { UserErrorMessages } from '../user/user.constants';
 
 @Injectable()
 export class TransportService implements OnModuleInit {
@@ -105,7 +106,13 @@ export class TransportService implements OnModuleInit {
   }
 
   async findById(id: string): Promise<Transport> {
-    return await this.transportModel.findById(id).exec();
+    const transport = await this.transportModel.findById(id).exec();
+
+    if (!transport) {
+      throw new NotFoundException('Нет такого транспорта');
+    }
+
+    return transport;
   }
 
   async checkForFreeInInterval(
