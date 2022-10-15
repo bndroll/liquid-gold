@@ -23,11 +23,6 @@ export class TicketController {
     return await this.tickerService.create(userId, dto);
   }
 
-  @Post('generate/raport/list')
-  async test() {
-    await this.tickerService.test();
-  }
-
   @Get()
   @Role(UserRole.Dispatcher)
   @UseGuards(JwtAuthGuard, RoleGuard)

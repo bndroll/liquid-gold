@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
 import { Transport, TransportCategory, TransportType } from './models/transport.model';
 import { CreateTransportDto } from './dto/craete-transport.dto';
-import { TicketState } from '../ticket/models/ticket.model';
+import { Ticket, TicketState } from '../ticket/models/ticket.model';
 
 @Injectable()
 export class TransportService implements OnModuleInit {
@@ -102,5 +103,43 @@ export class TransportService implements OnModuleInit {
 
   async findById(id: string): Promise<Transport> {
     return await this.transportModel.findById(id).exec();
+  }
+
+  async checkForFreeInInterval(
+    transportId: string, priority: number, dateStart: number, dateEnd: number,
+  ): Promise<boolean> {
+    const transports = await this.transportModel.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(transportId) } },
+      {
+        $lookup: {
+          from: 'tickets',
+          localField: '_id',
+          foreignField: 'transport',
+          as: 'tickets',
+        },
+      },
+    ]).exec();
+    const transport = transports[0];
+
+    if (transport.tickets.length === 0) {
+      return true;
+    }
+
+    const newDateStart = new Date(dateStart);
+    const newDateEnd = new Date(dateEnd);
+
+    // const blockedTickets: Ticket[] = [];
+
+    for (const ticket of transport.tickets) {
+      if (
+        (newDateEnd >= ticket.dateStart && newDateEnd <= ticket.dateEnd) ||
+        (ticket.dateEnd >= newDateStart && ticket.dateEnd <= newDateEnd)
+      ) {
+        // blockedTickets.push(ticket);
+        return false;
+      }
+    }
+
+    return true;
   }
 }
