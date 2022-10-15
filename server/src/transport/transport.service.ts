@@ -21,6 +21,7 @@ export class TransportService implements OnModuleInit {
         description: 'Автовышка (28 м)',
         number: 'А095АА/999',
         category: TransportCategory.A,
+        coordinates: {lat: 10, lon: 20},
         type: TransportType.Platforms,
       });
       await this.create({
@@ -29,6 +30,7 @@ export class TransportService implements OnModuleInit {
         description: 'Кран 100 т.',
         number: 'А306АА/999',
         category: TransportCategory.C,
+        coordinates: {lat: 30, lon: 40},
         type: TransportType.Cranes,
       });
       await this.create({
@@ -37,19 +39,20 @@ export class TransportService implements OnModuleInit {
         description: 'Погрузчик Телескопический 7,5т/5,4м',
         number: 'А589АА/999',
         category: TransportCategory.D,
+        coordinates: {lat: 50, lon: 60},
         type: TransportType.Loader,
       });
     }
   }
 
-  async create({ _id, title, description, number, category, type }: CreateTransportDto): Promise<Transport> {
+  async create({ _id, title, description, number, category, coordinates, type }: CreateTransportDto): Promise<Transport> {
     const oldTransport = await this.transportModel.findOne({ number }).exec();
     if (oldTransport) {
       throw new BadRequestException();
     }
 
     const transport = await new this.transportModel({
-      _id, title, description, number, category, type,
+      _id, title, description, number, category, coordinates, type,
     });
     return await transport.save();
   }

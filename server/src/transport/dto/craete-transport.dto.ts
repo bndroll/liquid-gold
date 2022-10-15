@@ -1,4 +1,4 @@
-import { TransportType } from '../models/transport.model';
+import { TransportGeoPoint, TransportType } from '../models/transport.model';
 
 export class CreateTransportDto {
   _id: string;
@@ -6,5 +6,6 @@ export class CreateTransportDto {
   description: string;
   number: string;
   category: string;
+  coordinates: TransportGeoPoint;
   type: TransportType;
 }

@@ -50,4 +50,11 @@ export class UserController {
   async findFreeDrivers() {
     return await this.userService.findFreeDrivers();
   }
+
+  @Get('find/all-drivers')
+  @Role(UserRole.Dispatcher)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async findAllDrivers() {
+    return await this.userService.findAllDrivers();
+  }
 }

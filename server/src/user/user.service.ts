@@ -41,4 +41,21 @@ export class UserService {
       { $unset: ['ticketsSize', 'tickets'] },
     ]).exec();
   }
+
+  async findAllDrivers() {
+    return await this.userModel.aggregate([
+      { $match: { role: UserRole.Driver } },
+      {
+        $lookup: {
+          from: 'tickets',
+          localField: '_id',
+          foreignField: 'driver',
+          as: 'tickets',
+        },
+      },
+      { $addFields: { ticketsSize: { $size: '$tickets' } } },
+      // { $match: { ticketsSize: 0 } },
+      { $unset: ['ticketsSize', 'tickets'] },
+    ]).exec();
+  }
 }
