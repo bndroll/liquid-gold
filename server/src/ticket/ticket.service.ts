@@ -115,7 +115,9 @@ export class TicketService implements OnModuleInit {
 
   async findMyTicket(userId: string) {
     return await this.ticketModel
-      .findOne({ driver: userId, state: TicketState.Open || TicketState.Working })
+      .find({ driver: userId })
+      .where('state')
+      .in([TicketState.Open, TicketState.Working])
       .exec();
   }
 
