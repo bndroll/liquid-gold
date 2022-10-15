@@ -1,8 +1,18 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { ACCESS_TOKEN } from '../constants/constants';
 
 const instance = axios.create();
 
 instance.defaults.baseURL = 'http://localhost:8080/';
+instance.interceptors.request.use((config: AxiosRequestConfig) => {
+  const accessToken = localStorage.getItem(ACCESS_TOKEN);
+  if (accessToken) {
+    config.headers = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+  }
+  return config;
+});
 
 export class Http {
   static get<T>(url: string): Promise<AxiosResponse<T>> {

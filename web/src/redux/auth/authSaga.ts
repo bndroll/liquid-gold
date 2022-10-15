@@ -9,7 +9,6 @@ export function* authWorker(
 ): SagaIterator {
   try {
     const response: TAuthRes = yield call(makeAuth, action.payload);
-    console.log(response);
     yield put(authSuccess(response));
   } catch (e) {
     console.log(e);
