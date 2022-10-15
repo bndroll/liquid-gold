@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TicketService } from './ticket.service';
 import { TicketController } from './ticket.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,6 +9,7 @@ import { Ticket, TicketSchema } from './models/ticket.model';
 import { UserModule } from '../user/user.module';
 import { TransportModule } from '../transport/transport.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ReportModule } from '../report/report.module';
 
 @Module({
   imports: [
@@ -19,10 +20,12 @@ import { ScheduleModule } from '@nestjs/schedule';
     ScheduleModule,
     ConfigModule,
     UserModule,
-    TransportModule,
+    forwardRef(() => TransportModule),
+    ReportModule,
   ],
   controllers: [TicketController],
   providers: [TicketService],
+  exports: [TicketService],
 })
 export class TicketModule {
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TransportService } from './transport.service';
 import { TransportController } from './transport.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -7,6 +7,7 @@ import { getJwtConfig } from '../configs/jwt.config';
 import { ConfigModule } from '@nestjs/config';
 import { Transport, TransportSchema } from './models/transport.model';
 import { UserModule } from '../user/user.module';
+import { TicketModule } from '../ticket/ticket.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserModule } from '../user/user.module';
     JwtModule.registerAsync(getJwtConfig()),
     ConfigModule,
     UserModule,
+    forwardRef(() => TicketModule)
   ],
   controllers: [TransportController],
   providers: [TransportService],

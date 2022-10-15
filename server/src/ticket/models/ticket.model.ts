@@ -7,7 +7,8 @@ import { User } from '../../user/models/user.model';
 export enum TicketState {
   Open = 'Open',
   Working = 'Working',
-  Close = 'Close'
+  Close = 'Close',
+  Rejected = 'Rejected'
 }
 
 export interface TicketGeoPoint {
@@ -43,6 +44,15 @@ export class Ticket extends Document {
 
   @Prop({ required: true, enum: TicketState, type: String })
   state: TicketState;
+
+  @Prop({ required: true })
+  dateStart: Date;
+
+  @Prop({ required: true })
+  dateEnd: Date;
+
+  @Prop({ required: true })
+  createdDate: Date;
 }
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);
