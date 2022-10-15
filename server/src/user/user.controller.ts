@@ -30,8 +30,7 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden, because role is not a Admin' })
   @ApiBearerAuth()
   @Get(':id')
-  @Role(UserRole.Dispatcher)
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  @UseGuards(JwtAuthGuard)
   async findById(@Param('id', IdValidationPipe) id: string) {
     return await this.userService.findById(id);
   }

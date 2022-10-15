@@ -1,8 +1,17 @@
 package com.example.liquidgold
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.RequestPoint
@@ -14,7 +23,6 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.MapObjectCollection
 import com.yandex.mapkit.mapview.MapView
 
-
 class MapActivity : AppCompatActivity(), DrivingSession.DrivingRouteListener{
     lateinit var mapView: MapView
     lateinit var mapObjects: MapObjectCollection
@@ -25,14 +33,14 @@ class MapActivity : AppCompatActivity(), DrivingSession.DrivingRouteListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MapKitFactory.setApiKey("_")
+        MapKitFactory.setApiKey("99bc48a5-8548-410e-b367-c467f79ee63b")
         MapKitFactory.initialize(this)
 
         setContentView(R.layout.activity_map_acitivity)
 
         mapView = findViewById(R.id.mapview)
         mapView.map.move(
-             CameraPosition(Point(59.945933, 30.320045), 14.2f, 0.0f, 0.0f),
+             CameraPosition(getMyCoordinates(), 14.2f, 0.0f, 0.0f),
              Animation(Animation.Type.SMOOTH, 2F),
              null
         )
@@ -40,13 +48,18 @@ class MapActivity : AppCompatActivity(), DrivingSession.DrivingRouteListener{
         mapObjects = mapView.map.mapObjects.addCollection()
         drivingRouter = DirectionsFactory.getInstance().createDrivingRouter()
 
-        mapView.map.mapObjects.addPlacemark(Point(59.9382409, 30.3257298))
-        mapView.map.mapObjects.addPlacemark(Point(59.961034, 30.3307573))
-
-        submitRequest()
+        mapView.map.mapObjects.addPlacemark(getMyCoordinates())
+        submitRequest(intent.getDoubleExtra("lat", 0.0), intent.getDoubleExtra("lon", 0.0))
+//
+//        MaterialAlertDialogBuilder(this)
+//            .setMessage("В машине под номер е777кх777 необходимо перевезти 4 тонны золота к 14 часам этого дня")
+//            .setPositiveButton(resources.getString(R.string.new_ticket_accept)) { dialog, which ->
+//
+//            }
+//            .show()
     }
 
-    private fun submitRequest() {
+    private fun submitRequest(lat: Double, lon: Double) {
         val drivingOptions = DrivingOptions()
         val vehicleOptions = VehicleOptions()
 
@@ -54,14 +67,14 @@ class MapActivity : AppCompatActivity(), DrivingSession.DrivingRouteListener{
         val requestPoints: ArrayList<RequestPoint> = ArrayList()
         requestPoints.add(
             RequestPoint(
-                Point(59.9382409, 30.3257298),
+                getMyCoordinates(),
                 RequestPointType.WAYPOINT,
                 null
             )
         )
         requestPoints.add(
             RequestPoint(
-                Point(59.961034, 30.3307573),
+                Point(lat, lon),
                 RequestPointType.WAYPOINT,
                 null
             )
@@ -78,6 +91,11 @@ class MapActivity : AppCompatActivity(), DrivingSession.DrivingRouteListener{
 
     override fun onDrivingRoutesError(p0: com.yandex.runtime.Error) {
         Toast.makeText(this, "Что-то пошло не так", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getMyCoordinates(): Point {
+        return Point(51.538779, 45.960191)
+//        return Point(45.958803, 51.534831)
     }
 
     override fun onStart() {

@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { TransportService } from './transport.service';
 import { Role } from '../user/decorators/role.decorator';
 import { UserRole } from '../user/models/user.model';
@@ -16,8 +16,15 @@ export class TransportController {
     return await this.transportService.findAll();
   }
 
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async findById(@Param('id') id: string) {
+    return await this.transportService.findById(id);
+  }
+
+
   @Get('/find/with-ticket')
-  @Role(UserRole.Dispatcher, UserRole.Dispatcher)
+  @Role(UserRole.Dispatcher)
   @UseGuards(JwtAuthGuard, RoleGuard)
   async findAllWithTickets() {
     return await this.transportService.findAllWithTickets();

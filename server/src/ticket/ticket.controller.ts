@@ -6,7 +6,6 @@ import { Role } from '../user/decorators/role.decorator';
 import { UserRole } from '../user/models/user.model';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
 import { RoleGuard } from '../user/guards/role.guard';
-import { ApiOperation } from '@nestjs/swagger';
 import { IdValidationPipe } from '../pipes/id-validation.pipe';
 
 @Controller('ticket')
@@ -14,7 +13,6 @@ export class TicketController {
   constructor(private readonly tickerService: TicketService) {
   }
 
-  @ApiOperation({ description: 'Create new ticket' })
   @Post()
   @Role(UserRole.Customer)
   @UseGuards(JwtAuthGuard, RoleGuard)

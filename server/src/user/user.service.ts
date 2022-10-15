@@ -19,7 +19,7 @@ export class UserService {
     const user = await this.userModel.findById(id).exec();
 
     if (!user) {
-      throw new NotFoundException(UserErrorMessages.NotFound);
+      throw new NotFoundException('Нет такого пользователя');
     }
 
     return user;
