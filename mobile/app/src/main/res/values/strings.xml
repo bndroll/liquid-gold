@@ -6,4 +6,7 @@
     <string name="login_button_text">Войти</string>
     <string name="my_task_button_text">К моей задаче</string>
     <string name="preference_auth_token_key">auth_value</string>
+    <string name="new_ticket">Ого! У вас новый заказ! Приступаем?</string>
+    <string name="new_ticket_accept">Поехали!</string>
+    <string name="new_ticket_decline">Отказаться</string>
 </resources>
