@@ -13,7 +13,6 @@ export const getUserSlice = createSlice({
   initialState: INITIAL_STATE,
   reducers: {
     getUserRequest(state): void {
-      console.log('request');
       state.loading = true;
     },
     getUserSuccess(state, action: PayloadAction<TUserRes>): void {

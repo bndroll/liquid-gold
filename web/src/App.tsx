@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { selectAccessToken } from './redux/auth/authSelectors';
 import { useDispatch } from 'react-redux';
 import { getUserRequest } from './redux/getUser/getUserSlice';
+import { getAllTransportRequest } from './redux/getAllTransport/getAllTransportSlice';
 
 const App: React.FC = (): JSX.Element => {
   const accessToken = useSelector(selectAccessToken);
@@ -20,6 +21,7 @@ const App: React.FC = (): JSX.Element => {
       localStorage.setItem(ACCESS_TOKEN, accessToken);
       history.push(APP_ROUTES.home.path);
       dispatch(getUserRequest());
+      dispatch(getAllTransportRequest());
     }
   }, [accessToken]);
 
@@ -28,6 +30,7 @@ const App: React.FC = (): JSX.Element => {
       history.push(APP_ROUTES.signin.path);
     } else {
       dispatch(getUserRequest());
+      dispatch(getAllTransportRequest());
     }
   }, []);
 

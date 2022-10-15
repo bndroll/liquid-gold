@@ -24,4 +24,5 @@ export type TTransport = {
   category: TransportCategory;
   coordinates: TTransportGeoPoint;
   type: TTransportType;
+  isFree: boolean;
 };

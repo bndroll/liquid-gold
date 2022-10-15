@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { authReducer } from './auth/authSlice';
 import { getAllTransportReducer } from './getAllTransport/getAllTransportSlice';
 import { getUserReducer } from './getUser/getUserSlice';
+import { selectedTransportReducer } from './selectedTransport/selectedTransportSlice';
 import { testReducer } from './testSaga/testSlice';
 
 const appReducer = combineReducers({
@@ -10,6 +11,7 @@ const appReducer = combineReducers({
   auth: authReducer,
   getUser: getUserReducer,
   getTransport: getAllTransportReducer,
+  selectedTransport: selectedTransportReducer,
 });
 
 const rootReducer = (state: any, action: PayloadAction<any>) => {

@@ -1,11 +1,14 @@
 import { Box, List, ListItemButton, ListItemText } from '@mui/material';
 import React, { FC } from 'react';
+import { useLocation } from 'react-router';
 import LogoMulti from '../../assets/logos/logo-multi.svg';
 import { ACCESS_TOKEN } from '../../constants/constants';
 import { APP_ROUTES } from '../../constants/routes';
 import history from '../../history';
 
 export const SideBar: FC = (): JSX.Element => {
+  const location = useLocation();
+
   const onLogoutClick = (): void => {
     localStorage.removeItem(ACCESS_TOKEN);
     history.push(APP_ROUTES.signin.path);
@@ -22,9 +25,16 @@ export const SideBar: FC = (): JSX.Element => {
         padding: '26px 10px',
       }}
     >
-      <LogoMulti />
+      <Box
+        sx={{ cursor: 'pointer' }}
+        onClick={() => history.push(APP_ROUTES.home.path)}
+      >
+        <LogoMulti />
+      </Box>
       <List>
         <ListItemButton
+          onClick={() => history.push(APP_ROUTES.createTicketTransport.path)}
+          selected={location.pathname === APP_ROUTES.createTicketTransport.path}
           sx={{
             borderRadius: '4px',
             marginBottom: '10px',

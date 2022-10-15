@@ -59,6 +59,14 @@ export const YandexMap: FC = (): JSX.Element => {
         result &&= true;
       }
 
+      if (filter.filterByAvailability !== 'All') {
+        result &&=
+          (item.isFree && filter.filterByAvailability === 'true') ||
+          (!item.isFree && filter.filterByAvailability === 'false');
+      } else {
+        result &&= true;
+      }
+
       result &&= item.title
         .toLocaleLowerCase()
         .includes(filter.filterByTitile.toLocaleLowerCase());

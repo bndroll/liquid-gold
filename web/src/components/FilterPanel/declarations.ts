@@ -1,4 +1,4 @@
-import { TTransport } from '../../types';
+import { TTransport, TTransportType } from '../../types';
 
 export type TFilterPanelProps = {
   transport: TTransport[];
@@ -10,4 +10,11 @@ export type TFilter = {
   filterByDescription: string;
   filterByCategory: string;
   filterByTitile: string;
+  filterByAvailability: string;
+};
+
+export const TypeToLabelMap = {
+  [TTransportType.Platforms]: 'Парк автовышек',
+  [TTransportType.Cranes]: 'Парк кранов',
+  [TTransportType.Loader]: 'Парк погрузчиков',
 };
