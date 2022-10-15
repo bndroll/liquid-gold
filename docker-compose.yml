@@ -9,3 +9,13 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     restart: always
+
+  rmq:
+    image: rabbitmq:3.11.1-management
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin

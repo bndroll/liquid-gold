@@ -26,7 +26,6 @@ export class AuthService implements OnModuleInit {
         password: '1234',
         role: UserRole.Customer,
         rating: 4,
-        categories: [TransportCategory.A, TransportCategory.C],
       });
       await this.register({
         _id: '6349a2f061eb9439d0e9150b',
@@ -53,7 +52,6 @@ export class AuthService implements OnModuleInit {
         password: '1234',
         role: UserRole.Dispatcher,
         rating: 4,
-        categories: [TransportCategory.B],
       });
     }
   }
@@ -69,7 +67,9 @@ export class AuthService implements OnModuleInit {
     const salt = await genSalt(10);
     const passwordHash = await hash(password, salt);
 
-    const user = new this.userModel({ _id: _id, username, fio, passwordHash, role, rating, categories });
+    const user = new this.userModel({
+      _id, username, fio, passwordHash, role, rating, categories,
+    });
     return await user.save();
   }
 

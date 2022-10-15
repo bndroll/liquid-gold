@@ -44,6 +44,15 @@ export class TicketController {
     return await this.tickerService.findMyTicket(userId);
   }
 
+  @Patch(':id/change-driver/:driver')
+  @Role(UserRole.Dispatcher)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async updateTicketDriver(
+    @Param('id', IdValidationPipe) id: string,
+    @Param('driver', IdValidationPipe) driverId: string) {
+    return await this.tickerService.updateTicketDriver(id, driverId);
+  }
+
   @Patch(':id/close')
   @Role(UserRole.Dispatcher)
   @UseGuards(JwtAuthGuard, RoleGuard)

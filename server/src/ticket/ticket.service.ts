@@ -1,10 +1,13 @@
-import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Ticket, TicketState } from './models/ticket.model';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UserService } from '../user/user.service';
 import { TransportService } from '../transport/transport.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { Transport } from '../transport/models/transport.model';
+import { User } from '../user/models/user.model';
 
 @Injectable()
 export class TicketService implements OnModuleInit {
@@ -78,12 +81,7 @@ export class TicketService implements OnModuleInit {
     const dbTicket = await ticket.save();
 
     const freeDrivers = await this.userService.findFreeDrivers();
-    const filteredDrivers = freeDrivers?.filter(driver => driver.categories.includes(orderedTransport.category));
-    const ratingFilteredDriver = filteredDrivers.sort((a, b) => a.rating - b.rating)[0];
-
-    dbTicket.driver = ratingFilteredDriver ?? null;
-
-    return await dbTicket.save();
+    return await this.filterDriversAndSetToTicket(dbTicket, orderedTransport, freeDrivers);
   }
 
   async findAll(): Promise<Ticket[]> {
@@ -95,7 +93,9 @@ export class TicketService implements OnModuleInit {
   }
 
   async findMyTicket(userId: string) {
-    return await this.ticketModel.findOne({ driver: userId }).exec();
+    return await this.ticketModel
+      .findOne({ driver: userId, state: TicketState.Open || TicketState.Working })
+      .exec();
   }
 
   async findById(id: string): Promise<Ticket> {
@@ -108,9 +108,43 @@ export class TicketService implements OnModuleInit {
     return ticket;
   }
 
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async setDriversToEmptyTickets() {
+    const emptyTickets = await this.ticketModel
+      .find({ driver: null, state: TicketState.Open || TicketState.Working })
+      .exec();
+    const freeDrivers = await this.userService.findFreeDrivers();
+
+    for (const emptyTicket of emptyTickets) {
+      const transport = await this.transportService.findById(emptyTicket.transport.toString());
+      await this.filterDriversAndSetToTicket(emptyTicket, transport, freeDrivers);
+    }
+  }
+
+  private async filterDriversAndSetToTicket(
+    ticket: Ticket, transport: Transport, drivers: User[],
+  ): Promise<Ticket> {
+    const filteredDrivers = drivers?.filter(driver => driver.categories.includes(transport.category));
+    const ratingFilteredDriver = filteredDrivers?.sort((a, b) => a.rating - b.rating)[0];
+
+    if (ratingFilteredDriver) {
+      ticket.driver = ratingFilteredDriver;
+      ticket.state = TicketState.Working;
+    } else {
+      ticket.driver = null;
+    }
+
+    return await ticket.save();
+  }
+
   async updateTicketDriver(id: string, driverId: string) {
     const ticket = await this.findById(id);
     const driver = await this.userService.findById(driverId);
+    const freeDrivers = await this.userService.findFreeDrivers();
+
+    if (!freeDrivers.includes(driver)) {
+      throw new BadRequestException('Водитель уже занят');
+    }
 
     ticket.driver = driver._id;
     ticket.state = TicketState.Working;

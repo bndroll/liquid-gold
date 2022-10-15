@@ -32,5 +32,5 @@ export class AuthRegisterDto {
   @IsNumber()
   rating: number;
 
-  categories: TransportCategory[];
+  categories?: TransportCategory[];
 }

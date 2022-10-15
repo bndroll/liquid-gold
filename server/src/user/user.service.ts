@@ -53,9 +53,12 @@ export class UserService {
           as: 'tickets',
         },
       },
-      { $addFields: { ticketsSize: { $size: '$tickets' } } },
-      // { $match: { ticketsSize: 0 } },
-      { $unset: ['ticketsSize', 'tickets'] },
+      {
+        $addFields: {
+          isFree: { $cond: { if: { $size: '$tickets' }, then: true, else: false } },
+        },
+      },
+      { $unset: ['tickets'] },
     ]).exec();
   }
 }

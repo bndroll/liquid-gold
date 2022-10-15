@@ -19,7 +19,8 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden, because role is not a Dispatcher' })
   @ApiBearerAuth()
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @Role(UserRole.Dispatcher)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   async findAll() {
     return await this.userService.findAll();
   }
@@ -29,7 +30,8 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden, because role is not a Admin' })
   @ApiBearerAuth()
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @Role(UserRole.Dispatcher)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   async findById(@Param('id', IdValidationPipe) id: string) {
     return await this.userService.findById(id);
   }

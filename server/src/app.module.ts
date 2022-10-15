@@ -8,17 +8,22 @@ import { getMongoConfig } from './configs/mongo.config';
 import { UserModule } from './user/user.module';
 import { TransportModule } from './transport/transport.module';
 import { TicketModule } from './ticket/ticket.module';
-import { AnalystModule } from './analyst/analyst.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { RMQModule } from 'nestjs-rmq';
+import { getRMQConfig } from './configs/rmq.config';
+import { RaportModule } from './raport/raport.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forRootAsync(getMongoConfig()),
+    ScheduleModule.forRoot(),
+    RMQModule.forRootAsync(getRMQConfig()),
     AuthModule,
     UserModule,
     TransportModule,
     TicketModule,
-    AnalystModule,
+    RaportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

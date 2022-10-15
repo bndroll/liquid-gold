@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Ticket, TicketSchema } from './models/ticket.model';
 import { UserModule } from '../user/user.module';
 import { TransportModule } from '../transport/transport.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TransportModule } from '../transport/transport.module';
       { name: Ticket.name, schema: TicketSchema },
     ]),
     JwtModule.registerAsync(getJwtConfig()),
+    ScheduleModule,
     ConfigModule,
     UserModule,
     TransportModule,
