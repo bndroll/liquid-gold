@@ -11,7 +11,7 @@ export class ReportService {
 
   async generate({ driver, customer, ticket, transport }: GenerateReportContract.Request) {
     try {
-      return await this.rmqService.send<GenerateReportContract.Request, GenerateReportContract.Response>
+      this.rmqService.send<GenerateReportContract.Request, GenerateReportContract.Response>
       ('report.generate.event', { ticket, driver, customer, transport });
     } catch (e) {
       if (e instanceof Error) {
