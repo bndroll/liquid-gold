@@ -22,6 +22,11 @@ export const AppRouter: FC = (): JSX.Element => {
 
   const TICKET_PAGE = useMemo(() => lazy(() => import('./pages/ticket')), []);
 
+  const ALL_TICKETS_PAGE = useMemo(
+    () => lazy(() => import('./pages/allTickets')),
+    []
+  );
+
   return (
     <Suspense fallback={<Spin />}>
       <Switch>
@@ -43,6 +48,11 @@ export const AppRouter: FC = (): JSX.Element => {
           exact
         />
         <Route path={APP_ROUTES.ticket.path} component={TICKET_PAGE} exact />
+        <Route
+          path={APP_ROUTES.allTickets.path}
+          component={ALL_TICKETS_PAGE}
+          exact
+        />
       </Switch>
     </Suspense>
   );

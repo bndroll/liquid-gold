@@ -30,4 +30,8 @@ export class Http {
   static _delete<T>(url: string, data: any): Promise<AxiosResponse<T>> {
     return instance.delete<T>(url);
   }
+
+  static patch<T>(url: string, data: any): Promise<AxiosResponse<T>> {
+    return instance.patch<T>(url, data);
+  }
 }
