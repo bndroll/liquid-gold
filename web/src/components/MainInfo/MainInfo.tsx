@@ -8,11 +8,15 @@ import {
   MenuItem,
   SelectChangeEvent,
   Button,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogActions,
 } from '@mui/material';
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectSelectedTransport } from '../../redux/selectedTransport/selectedTransportSelectors';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -30,6 +34,7 @@ export const MainInfo: FC<TMainInfoProps> = ({ coords }): JSX.Element => {
   const [startDate, setStartDate] = useState(+new Date());
   const [endDate, setEndDate] = useState(+new Date());
   const dispatch = useDispatch();
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const handleChangeTitle = (event: ChangeEvent<HTMLInputElement>): void => {
     setTitle(event.target.value);
@@ -67,7 +72,14 @@ export const MainInfo: FC<TMainInfoProps> = ({ coords }): JSX.Element => {
       dateEnd: endDate,
     };
 
-    dispatch(createTicketRequest(request));
+    setModalOpen(true);
+    setTimeout(() => {
+      dispatch(createTicketRequest(request));
+    }, 3000);
+  };
+
+  const handleClose = (): void => {
+    setModalOpen(false);
   };
 
   return (
@@ -166,6 +178,12 @@ export const MainInfo: FC<TMainInfoProps> = ({ coords }): JSX.Element => {
       >
         Отправить
       </LoadingButton>
+      <Dialog onClose={handleClose} open={isModalOpen}>
+        <DialogTitle>Заявка создана. Отчет сгенериррован</DialogTitle>
+        <DialogActions>
+          <Button onClick={handleClose}>Понятно</Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };

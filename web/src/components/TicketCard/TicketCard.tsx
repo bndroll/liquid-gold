@@ -7,6 +7,7 @@ import { TTicketCardProps } from './declarations';
 
 export const TicketCard: FC<TTicketCardProps> = ({ ticket }): JSX.Element => {
   const learnMore = (): void => {
+    console.log(ticket._id);
     history.push(APP_ROUTES.ticket.path, { ticketId: ticket._id });
   };
 
